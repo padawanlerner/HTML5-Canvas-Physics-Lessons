@@ -4,9 +4,59 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>One dimensional kinematics</title>
+  <title>Kinematics in one dimension</title>
+  <style media="screen">
+    body{
+      background-color: rgb(116, 158, 223);
+
+    }
+    #kinematics1d {
+      background-color: rgb(88, 133, 236);
+      border: 1px solid black;
+    }
+  </style>
 </head>
 <body>
+
+  <h1>Kinematics in one dimension</h1>
+  <canvas id = "kinematics1d" width = "800" height = "300">
+
+  </canvas>
+  <div id="inputs">
+
+  </div>
+
+  <script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function(){
+      const canvas = document.getElementById('kinematics1d')
+      const BALLRADIUS = 5;
+      const AXIS_Y_POS = 180;
+
+      let ctx = canvas.getContext("2d");
+      ctx.clearRect(0,0, canvas.width, canvas.height)
+
+      ctx.arc(70, canvas.height/2, BALLRADIUS, 0, Math.PI * 2)
+      ctx.stroke()
+      ctx.fill()
+
+      ctx.moveTo(0, AXIS_Y_POS);
+      ctx.lineTo(800, AXIS_Y_POS);
+      ctx.stroke()
+
+      for (let i = 1; i < 12; i++) {
+        ctx.moveTo(70*(i), AXIS_Y_POS-15);
+        ctx.lineTo(70*(i), AXIS_Y_POS+15);
+        ctx.stroke()
+
+        ctx.font="20px Georgia";
+        ctx.fillText(i-1, 70*(i)-25, AXIS_Y_POS+25)
+      }
+
+
+
+    })
+
+  </script>
 
 </body>
 </html>
