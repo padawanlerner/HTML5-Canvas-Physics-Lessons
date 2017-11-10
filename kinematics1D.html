@@ -63,6 +63,8 @@
         // let begin = myAxis.ftp + myAxis.spacing*parseInt(document.getElementById('ip').value)
 
         this.disabled = true
+        document.getElementById('ip').disabled = true
+        document.getElementById('fp').disabled = true
         // console.log(end)
         console.log("click")
 
@@ -108,6 +110,8 @@
         if ((myBall.x > end && direction) || (myBall.x < end && !direction)) {
           cancelAnimationFrame(af)
           document.getElementById('run').disabled = false
+          document.getElementById('ip').disabled = false
+          document.getElementById('fp').disabled = false
         }
 
       }
