@@ -66,6 +66,11 @@
         // console.log(end)
         console.log("click")
 
+        myBall.x = myAxis.ftp + myAxis.spacing*parseInt(document.getElementById('ip').value)
+        ctx.clearRect(0,0, canvas.width, canvas.height)
+        myAxis.draw(ctx)
+        myBall.draw(ctx)
+
         requestAnimationFrame(animateMovingFromStartToEnd)
 
       })
