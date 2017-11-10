@@ -8,11 +8,20 @@
   <style media="screen">
     body{
       background-color: rgb(116, 158, 223);
+      text-align: center;
 
     }
     #kinematics1d {
       background-color: rgb(88, 133, 236);
       border: 1px solid black;
+    }
+
+    div{
+      display: flex;
+      justify-content: center;
+    }
+    .child{
+      display: block;
     }
   </style>
 </head>
@@ -22,10 +31,14 @@
   <canvas id = "kinematics1d" width = "800" height = "300">
 
   </canvas>
-  <div id="inputs">
+  <h2>Displacement (&Delta;x)</h2>
+  <p>Displacement = Final Position - Initial Position</p>
+  <p><label for="ip">Initial Position: </label><input type="number" id="ip" value="0" max = "10" min = "0"></p>
+  <p><label for="fp">Final Position: </label><input type="number" id="fp" value="0" max = "10" min = "0"></p>
+  <button type="button" id="run">Run Animation</button>
 
-  </div>
 
+  <script src="js/objects.js" charset="utf-8"></script>
   <script type="text/javascript">
     document.addEventListener("DOMContentLoaded", function(){
       const canvas = document.getElementById('kinematics1d')
@@ -35,26 +48,53 @@
       let ctx = canvas.getContext("2d");
       ctx.clearRect(0,0, canvas.width, canvas.height)
 
-      ctx.arc(70, canvas.height/2, BALLRADIUS, 0, Math.PI * 2)
-      ctx.stroke()
-      ctx.fill()
+      let myBall = ball(0.7, BALLRADIUS, 70, canvas.height/2, 5/1000, 0, "rgb(24, 144, 107)")
+      let myAxis = axis(0, canvas.width, 70, 0, AXIS_Y_POS, 70, 11, 0, 1)
+// (min, max, spaceBet, isVertical, pos, firstTickPos, numTicks, firstTickVal, tickInterval)
+      myBall.draw(ctx)
+      myAxis.draw(ctx)
 
-      ctx.moveTo(0, AXIS_Y_POS);
-      ctx.lineTo(800, AXIS_Y_POS);
-      ctx.stroke()
+      // let startDate = new Date();
+      // let initial = startDate.getTime();
+      let start = null
 
-      for (let i = 1; i < 12; i++) {
-        ctx.moveTo(70*(i), AXIS_Y_POS-15);
-        ctx.lineTo(70*(i), AXIS_Y_POS+15);
-        ctx.stroke()
+      function animateMovingFromStartToEnd(timeStamp) {
+        console.log("animating")
+        // console.log(finish)
+        start = !start ? timeStamp: start
+        ctx.clearRect(0,0, canvas.width, canvas.height)
+        myBall.x+=1
+        myAxis.draw(ctx)
+        myBall.draw(ctx)
 
-        ctx.font="20px Georgia";
-        ctx.fillText(i-1, 70*(i)-25, AXIS_Y_POS+25)
+        requestAnimationFrame(animateMovingFromStartToEnd);
+
       }
 
 
+      document.getElementById('run').addEventListener("click", function(e){
+        // let begin = myAxis.ftp + myAxis.spacing*parseInt(document.getElementById('ip').value)
+        let end = myAxis.ftp + myAxis.spacing*parseInt(document.getElementById('fp').value)
+        this.disabled = true
+        // console.log(end)
+        console.log("click")
+
+        requestAnimationFrame(animateMovingFromStartToEnd)
+
+      })
+
+      document.getElementById('ip').addEventListener("change", function (e) {
+        myBall.x = myAxis.ftp + myAxis.spacing*parseInt(document.getElementById('ip').value)
+        ctx.clearRect(0,0, canvas.width, canvas.height)
+        myAxis.draw(ctx)
+        myBall.draw(ctx)
+
+        // console.log("change")
+      })
+
 
     })
+
 
   </script>
 
