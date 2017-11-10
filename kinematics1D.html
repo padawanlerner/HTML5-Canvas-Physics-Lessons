@@ -50,31 +50,18 @@
 
       let myBall = ball(0.7, BALLRADIUS, 70, canvas.height/2, 5/1000, 0, "rgb(24, 144, 107)")
       let myAxis = axis(0, canvas.width, 70, 0, AXIS_Y_POS, 70, 11, 0, 1)
-// (min, max, spaceBet, isVertical, pos, firstTickPos, numTicks, firstTickVal, tickInterval)
+      // (min, max, spaceBet, isVertical, pos, firstTickPos, numTicks, firstTickVal, tickInterval)
       myBall.draw(ctx)
       myAxis.draw(ctx)
 
       // let startDate = new Date();
       // let initial = startDate.getTime();
-      let start = null
 
-      function animateMovingFromStartToEnd(timeStamp) {
-        console.log("animating")
-        // console.log(finish)
-        start = !start ? timeStamp: start
-        ctx.clearRect(0,0, canvas.width, canvas.height)
-        myBall.x+=1
-        myAxis.draw(ctx)
-        myBall.draw(ctx)
-
-        requestAnimationFrame(animateMovingFromStartToEnd);
-
-      }
 
 
       document.getElementById('run').addEventListener("click", function(e){
         // let begin = myAxis.ftp + myAxis.spacing*parseInt(document.getElementById('ip').value)
-        let end = myAxis.ftp + myAxis.spacing*parseInt(document.getElementById('fp').value)
+
         this.disabled = true
         // console.log(end)
         console.log("click")
@@ -92,6 +79,33 @@
         // console.log("change")
       })
 
+      let start = null;
+      function animateMovingFromStartToEnd(timeStamp) {
+        console.log("animating")
+        let end = myAxis.ftp + myAxis.spacing*parseInt(document.getElementById('fp').value)
+        // console.log(finish)
+        start = !start ? timeStamp: start
+        ctx.clearRect(0,0, canvas.width, canvas.height)
+        let direction;
+        if (parseInt(document.getElementById('ip').value) > parseInt(document.getElementById('fp').value)) {
+          direction = 0;
+          myBall.x-=1;
+        }else {
+          direction = 1;
+          myBall.x+=1
+
+        }
+        myAxis.draw(ctx)
+        myBall.draw(ctx)
+
+        let af = requestAnimationFrame(animateMovingFromStartToEnd);
+
+        if ((myBall.x > end && direction) || (myBall.x < end && !direction)) {
+          cancelAnimationFrame(af)
+          document.getElementById('run').disabled = false
+        }
+
+      }
 
     })
 
