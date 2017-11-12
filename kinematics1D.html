@@ -33,9 +33,13 @@
   </canvas>
   <h2>Displacement (&Delta;x)</h2>
   <p>Displacement = Final Position - Initial Position</p>
-  <p><label for="ip">Initial Position: </label><input type="number" id="ip" value="0" max = "10" min = "0"></p>
-  <p><label for="fp">Final Position: </label><input type="number" id="fp" value="0" max = "10" min = "0"></p>
-  <button type="button" id="run">Run Animation</button>
+  <form id="run" action="index.html" method="post">
+    <p><label for="ip">Initial Position: </label><input type="number" id="ip" value="0" max = "10" min = "0"></p>
+    <p><label for="fp">Final Position: </label><input type="number" id="fp" value="0" max = "10" min = "0"></p>
+    <input type="submit" value = "Run Animation">
+    <p id ="deltax"></p>
+
+  </form>
 
 
   <script src="js/objects.js" charset="utf-8"></script>
@@ -59,9 +63,9 @@
 
 
 
-      document.getElementById('run').addEventListener("click", function(e){
+      document.getElementById('run').addEventListener("submit", function(e){
         // let begin = myAxis.ftp + myAxis.spacing*parseInt(document.getElementById('ip').value)
-
+        e.preventDefault();
         this.disabled = true
         document.getElementById('ip').disabled = true
         document.getElementById('fp').disabled = true
@@ -72,6 +76,9 @@
         ctx.clearRect(0,0, canvas.width, canvas.height)
         myAxis.draw(ctx)
         myBall.draw(ctx)
+
+        let disp = parseInt(document.getElementById('fp').value)-parseInt(document.getElementById('ip').value)
+        document.getElementById("deltax").innerHTML = "&Delta;X = " + parseInt(document.getElementById('fp').value) +" - "+parseInt(document.getElementById('ip').value) +" = "+ disp
 
         requestAnimationFrame(animateMovingFromStartToEnd)
 
