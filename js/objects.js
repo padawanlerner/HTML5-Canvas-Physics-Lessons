@@ -1,7 +1,10 @@
 const move = (state) => ({
   move: (dt) => {
+    // console.log("Prior position = " + state.x)
     state.x+=dt*state.vx;
     state.y+=dt*state.vy;
+    // console.log("after position = " + state.x)
+
 
   }
 })

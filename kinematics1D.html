@@ -28,18 +28,21 @@
 <body>
 
   <h1>Kinematics in one dimension</h1>
+  <h2>Displacement</h2>
   <canvas id = "kinematics1d" width = "800" height = "300">
 
   </canvas>
-  <h2>Displacement (&Delta;x)</h2>
+  <h2>Displacement (&Delta;X)</h2>
   <p>Displacement = Final Position - Initial Position</p>
   <form id="run" action="index.html" method="post">
     <p><label for="ip">Initial Position: </label><input type="number" id="ip" value="0" max = "10" min = "0"></p>
     <p><label for="fp">Final Position: </label><input type="number" id="fp" value="0" max = "10" min = "0"></p>
-    <input type="submit" value = "Run Animation">
+    <input type="submit" id = "submitButton" value = "Run Animation">
     <p id ="deltax"></p>
 
   </form>
+
+  <p><a href="velocity1D.html">Next - Velocity</a></p>
 
 
   <script src="js/objects.js" charset="utf-8"></script>
@@ -66,9 +69,9 @@
       document.getElementById('run').addEventListener("submit", function(e){
         // let begin = myAxis.ftp + myAxis.spacing*parseInt(document.getElementById('ip').value)
         e.preventDefault();
-        this.disabled = true
-        document.getElementById('ip').disabled = true
-        document.getElementById('fp').disabled = true
+        document.getElementById('submitButton').disabled = true;
+        document.getElementById('ip').disabled = true;
+        document.getElementById('fp').disabled = true;
         // console.log(end)
         console.log("click")
 
@@ -95,7 +98,7 @@
 
       let start = null;
       function animateMovingFromStartToEnd(timeStamp) {
-        console.log("animating")
+        // console.log("animating")
         let end = myAxis.ftp + myAxis.spacing*parseInt(document.getElementById('fp').value)
         // console.log(finish)
         start = !start ? timeStamp: start
@@ -115,10 +118,11 @@
         let af = requestAnimationFrame(animateMovingFromStartToEnd);
 
         if ((myBall.x > end && direction) || (myBall.x < end && !direction)) {
-          cancelAnimationFrame(af)
-          document.getElementById('run').disabled = false
-          document.getElementById('ip').disabled = false
-          document.getElementById('fp').disabled = false
+          cancelAnimationFrame(af);
+          document.getElementById('submitButton').disabled = false;
+
+          document.getElementById('ip').disabled = false;
+          document.getElementById('fp').disabled = false;
         }
 
       }

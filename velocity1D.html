@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Kinematics in one dimension</title>
+  <style media="screen">
+    body {
+      background-color: rgb(116, 158, 223);
+      text-align: center;
+
+    }
+
+    canvas {
+      background-color: rgb(88, 133, 236);
+      border: 1px solid black;
+    }
+
+    div {
+      display: flex;
+      justify-content: center;
+    }
+
+    .child {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Kinematics in one dimension</h1>
+  <h2>Velocity</h2>
+  <canvas id="kinematics1d" width="800" height="300">
+
+  </canvas>
+  <h2>Velocity V</h2>
+  <p>Velocity = Displacement / time (&Delta;X/&Delta;t)</p>
+  <p id = "time">0</p>
+
+  <form id="run" action="index.html" method="post">
+
+    <div style="display: flex;">
+      <div style="display: block; margin-right: 15px;">
+        <p><label for="ip">Initial Position: </label><input required max="10" min="0" type="number" name="ip" id="ip" value=""></p>
+        <p><label for="fp">Final Position: </label><input required max="10" min="0" type="number" name="fp" id="fp" value=""></p>
+      </div>
+      <div style="display: block; margin-left: 15px;">
+        <p><label for="dt">Time (seconds): </label><input required type="number" name="dt" id="dt" value=""></p>
+      </div>
+
+    </div>
+
+
+    <input id="runButton" type="submit" value="Run Animation">
+
+  </form>
+  <p id="answer">V = ?</p>
+
+  <p><a href="kinematics1D.html">Previous - Displacement</a> <a href="acceleration1D.html">Next - Acceleration</a></p>
+
+  <script src="js/objects.js" charset="utf-8"></script>
+  <script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+      const canvas = document.getElementById('kinematics1d')
+      const BALLRADIUS = 5;
+      const AXIS_Y_POS = 180;
+
+      let ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+      let myBall = ball(0.7, BALLRADIUS, 70, canvas.height / 2, 5 / 1000, 0, "rgb(24, 144, 107)")
+      let myAxis = axis(0, canvas.width, 70, 0, AXIS_Y_POS, 70, 11, 0, 1)
+      // (min, max, spaceBet, isVertical, pos, firstTickPos, numTicks, firstTickVal, tickInterval)
+      myBall.draw(ctx)
+      myAxis.draw(ctx)
+      // ctx.font = "30px Arial";
+      // ctx.fillText("0:00", 600, 50);
+
+      document.getElementById('run').addEventListener("submit", function(e) {
+        e.preventDefault();
+        document.getElementById('dt').disabled = true;
+        document.getElementById('ip').disabled = true;
+        document.getElementById('fp').disabled = true;
+        document.getElementById('runButton').disabled = true;
+
+        let timeDiff = parseFloat(document.getElementById('dt').value);
+        let ip = parseFloat(document.getElementById('ip').value);
+        let fp = parseFloat(document.getElementById('fp').value);
+
+        let v = (fp - ip) / timeDiff;
+        prev=null;
+
+        myBall.x = myAxis.ftp + myAxis.spacing * ip;
+
+        document.getElementById('answer').innerHTML = "V = (" + fp + " - " + ip + ")/" + timeDiff + " = " + v
+        myBall.vx = v * myAxis.spacing;
+        console.log("Velocity: "+myBall.vx)
+        let af = requestAnimationFrame(animateBall);
+
+      })
+
+      document.getElementById('ip').addEventListener("change", function() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        myBall.x = myAxis.ftp + myAxis.spacing * parseInt(this.value)
+        myBall.draw(ctx)
+        myAxis.draw(ctx)
+
+      })
+
+      let prev = null;
+      let start = null;
+
+      function animateBall(ts) {
+        if (!prev) {
+          prev = ts;
+        }
+        if (!start){
+          start = ts;
+        }
+        let end = myAxis.ftp + myAxis.spacing * parseInt(document.getElementById('fp').value);
+        // console.log(end)
+        let dt = (ts - prev)/1000;
+        // console.log("dt: " + dt)
+        // console.log("X: "+myBall.x)
+        let direction;
+        if (parseInt(document.getElementById('ip').value) > parseInt(document.getElementById('fp').value)) {
+          direction = 0;
+          //this is where you decide how to animate the thingy
+          // myBall.x-=1;
+        } else {
+          direction = 1;
+          // myBall.x+=1
+
+        }
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        myBall.move(dt);
+        myAxis.draw(ctx)
+        myBall.draw(ctx)
+        // console.log(dt / 1000);
+
+        // ctx.fillText(dt/1000+":"+String(dt/100)+String(dt/10),600,50);
+        document.getElementById("time").innerHTML = Math.floor((ts-start)/1000)
+
+        prev = ts;
+        let af = requestAnimationFrame(animateBall);
+
+        if ((myBall.x > end && direction) || (myBall.x < end && !direction)) {
+          cancelAnimationFrame(af);
+          document.getElementById('dt').disabled = false;
+          document.getElementById('ip').disabled = false;
+          document.getElementById('fp').disabled = false;
+          document.getElementById('runButton').disabled = false;
+          start = null;
+        }
+
+      }
+
+    })
+  </script>
+
+</body>
+
+</html>
