@@ -32,20 +32,24 @@
 <body>
 
   <h1>Kinematics in one dimension</h1>
-  <h2>Velocity</h2>
+  <h2>Acceleration</h2>
   <canvas id="kinematics1d" width="800" height="300">
 
   </canvas>
-  <h2>Velocity V</h2>
-  <p>Velocity = Displacement / time (&Delta;X/&Delta;t)</p>
+  <h2>Acceleration a</h2>
+  <p>Acceleration = Change in velocity over time (&Delta;V/&Delta;t)</p>
   <p id = "time">0</p>
 
   <form id="run" action="index.html" method="post">
 
     <div style="display: flex;">
       <div style="display: block; margin-right: 15px;">
-        <p><label for="ip">Initial Position: </label><input required max="10" min="0" type="number" name="ip" id="ip" value=""></p>
-        <p><label for="fp">Final Position: </label><input required max="10" min="0" type="number" name="fp" id="fp" value=""></p>
+        <p><label for="ip">Initial Position: </label><input required max="10" min="0" type="number" name="ip" id="ip" value="0" disabled></p>
+        <p><label for="fp">Final Position: </label><input required max="10" min="0" type="number" name="fp" id="fp" value="10" disabled></p>
+      </div>
+      <div style="display: block; margin-right: 15px;">
+        <p><label for="iv">Initial Velocity: </label><input required max="10" min="-10" type="number" name="iv" id="iv" value=""></p>
+        <p><label for="fv">Final Velocity: </label><input required max="10" min="-10" type="number" name="fv" id="fv" value=""></p>
       </div>
       <div style="display: block; margin-left: 15px;">
         <p><label for="dt">Time (seconds): </label><input required type="number" name="dt" id="dt" value=""></p>
@@ -57,9 +61,9 @@
     <input id="runButton" type="submit" value="Run Animation">
 
   </form>
-  <p id="answer">V = ?</p>
+  <p id="answer">A = ?</p>
 
-  <p><a href="kinematics1D.html">Previous - Displacement</a> <a href="acceleration1D.html">Next - Acceleration</a></p>
+  <p><a href="velocity1D.html">Prev - Velocity</a> <a href="index.html">Go home</a></p>
 
   <script src="js/objects.js" charset="utf-8"></script>
   <script type="text/javascript">
@@ -74,39 +78,34 @@
       let myBall = ball(0.7, BALLRADIUS, 70, canvas.height / 2, 5 / 1000, 0, "rgb(24, 144, 107)")
       let myAxis = axis(0, canvas.width, 70, 0, AXIS_Y_POS, 70, 11, 0, 1)
       // (min, max, spaceBet, isVertical, pos, firstTickPos, numTicks, firstTickVal, tickInterval)
-      myBall.draw(ctx)
-      myAxis.draw(ctx)
-      // ctx.font = "30px Arial";
-      // ctx.fillText("0:00", 600, 50);
+      myBall.draw(ctx);
+      myAxis.draw(ctx);
 
       document.getElementById('run').addEventListener("submit", function(e) {
         e.preventDefault();
         document.getElementById('dt').disabled = true;
-        document.getElementById('ip').disabled = true;
-        document.getElementById('fp').disabled = true;
+        document.getElementById('iv').disabled = true;
+        document.getElementById('fv').disabled = true;
         document.getElementById('runButton').disabled = true;
 
         let timeDiff = parseFloat(document.getElementById('dt').value);
         let ip = parseFloat(document.getElementById('ip').value);
         let fp = parseFloat(document.getElementById('fp').value);
 
-        let v = (fp - ip) / timeDiff;
-        prev=null;
+        let fv = parseFloat(document.getElementById('fv').value);
+        let iv = parseFloat(document.getElementById('iv').value);
+        let a = (fv-iv)/timeDiff;
 
         myBall.x = myAxis.ftp + myAxis.spacing * ip;
+        document.getElementById('answer').innerHTML = "a = (" + fv + " - " + iv + ")/" + timeDiff + " = " + a;
+        myBall.vx = iv * myAxis.spacing;
 
-        document.getElementById('answer').innerHTML = "V = (" + fp + " - " + ip + ")/" + timeDiff + " = " + v
-        myBall.vx = v * myAxis.spacing;
-        console.log("Velocity: "+myBall.vx)
-        let af = requestAnimationFrame(animateBall);
-
-      })
-
-      document.getElementById('ip').addEventListener("change", function() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        myBall.x = myAxis.ftp + myAxis.spacing * parseInt(this.value)
-        myBall.draw(ctx)
-        myAxis.draw(ctx)
+        myAxis.draw(ctx);
+        myBall.draw(ctx);
+
+        let af = requestAnimationFrame(animateBall)
+
 
       })
 
@@ -114,47 +113,43 @@
       let start = null;
 
       function animateBall(ts) {
+        console.log("animating")
         if (!prev) {
           prev = ts;
         }
         if (!start){
           start = ts;
         }
-        let end = myAxis.ftp + myAxis.spacing * parseInt(document.getElementById('fp').value);
-        // console.log(end)
         let dt = (ts - prev)/1000;
-        // console.log("dt: " + dt)
-        // console.log("X: "+myBall.x)
-        let direction;
-        if (parseInt(document.getElementById('ip').value) > parseInt(document.getElementById('fp').value)) {
-          direction = 0;
-          //this is where you decide how to animate the thingy
-          // myBall.x-=1;
-        } else {
-          direction = 1;
-          // myBall.x+=1
-
-        }
+        let timeDiff = parseFloat(document.getElementById('dt').value);
+        let end = myAxis.ftp + myAxis.spacing * parseInt(document.getElementById('fp').value);
+        let begin = myAxis.ftp + myAxis.spacing * parseInt(document.getElementById('ip').value);
+        let fv = parseFloat(document.getElementById('fv').value);
+        let iv = parseFloat(document.getElementById('iv').value);
+        let a = (fv-iv)/timeDiff;
+        console.log("iv = " + iv)
+        console.log("dt = "+dt)
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        console.log(myBall.vx)
+        myBall.accelerate(a, 0 , dt);
         myBall.move(dt);
         myAxis.draw(ctx);
         myBall.draw(ctx);
-        // console.log(dt / 1000);
 
-        // ctx.fillText(dt/1000+":"+String(dt/100)+String(dt/10),600,50);
+        let af = requestAnimationFrame(animateBall);
         document.getElementById("time").innerHTML = Math.floor((ts-start)/1000)
 
-        prev = ts;
-        let af = requestAnimationFrame(animateBall);
-
-        if ((myBall.x > end && direction) || (myBall.x < end && !direction)) {
+        if ((myBall.x > end) || (myBall.x < begin) ) {
           cancelAnimationFrame(af);
           document.getElementById('dt').disabled = false;
-          document.getElementById('ip').disabled = false;
-          document.getElementById('fp').disabled = false;
+          document.getElementById('iv').disabled = false;
+          document.getElementById('fv').disabled = false;
           document.getElementById('runButton').disabled = false;
           start = null;
+          prev = null;
         }
+
+
 
       }
 

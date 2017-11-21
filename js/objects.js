@@ -11,8 +11,8 @@ const move = (state) => ({
 
 const acclerate = (state) => ({
   accelerate: (ax, ay, dt) =>{
-    state.vy+= ax*dt;
-    state.vx+= ay*dt;
+    state.vx+= ax*dt;
+    state.vy+= ay*dt;
   }
 })
 
