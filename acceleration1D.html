@@ -38,7 +38,9 @@
   </canvas>
   <h2>Acceleration a</h2>
   <p>Acceleration = Change in velocity over time (&Delta;V/&Delta;t)</p>
-  <p id = "time">0</p>
+  <p>Time:  <span id = "time"></span></p>
+  <p>Velocity at above time:  <span id = "inst_v"></span> (a * &Delta;t)</p>
+
 
   <form id="run" action="index.html" method="post">
 
@@ -46,14 +48,17 @@
       <div style="display: block; margin-right: 15px;">
         <p><label for="ip">Initial Position: </label><input required max="10" min="0" type="number" name="ip" id="ip" value="0" disabled></p>
         <p><label for="fp">Final Position: </label><input required max="10" min="0" type="number" name="fp" id="fp" value="10" disabled></p>
+
       </div>
       <div style="display: block; margin-right: 15px;">
-        <p><label for="iv">Initial Velocity: </label><input required max="10" min="-10" type="number" name="iv" id="iv" value=""></p>
-        <p><label for="fv">Final Velocity: </label><input required max="10" min="-10" type="number" name="fv" id="fv" value=""></p>
+        <p><label for="iv">Initial Velocity: </label><input required max="10" min="-10" type="number" name="iv" id="iv" value="0"></p>
+        <!-- <p><label for="fv">Final Velocity: </label><input required max="10" min="-10" type="number" name="fv" id="fv" value=""></p> -->
+        <p><label for="ax">Acceleration: </label><input required max="10" min="-10" type="number" name="ax" id="ax" value="1"></p>
+
       </div>
-      <div style="display: block; margin-left: 15px;">
-        <p><label for="dt">Time (seconds): </label><input required type="number" name="dt" id="dt" value=""></p>
-      </div>
+      <!-- <div style="display: block; margin-left: 15px;">
+        <p><label for="dt">Time (seconds): </label><input required type="number" name="dt" id="dt" step = "any" value=""></p>
+      </div> -->
 
     </div>
 
@@ -61,7 +66,7 @@
     <input id="runButton" type="submit" value="Run Animation">
 
   </form>
-  <p id="answer">A = ?</p>
+  <!-- <p id="answer">A = ?</p> -->
 
   <p><a href="velocity1D.html">Prev - Velocity</a> <a href="index.html">Go home</a></p>
 
@@ -83,21 +88,21 @@
 
       document.getElementById('run').addEventListener("submit", function(e) {
         e.preventDefault();
-        document.getElementById('dt').disabled = true;
+        // document.getElementById('dt').disabled = true;
         document.getElementById('iv').disabled = true;
-        document.getElementById('fv').disabled = true;
+        document.getElementById('ax').disabled = true;
         document.getElementById('runButton').disabled = true;
 
-        let timeDiff = parseFloat(document.getElementById('dt').value);
+        // let timeDiff = parseFloat(document.getElementById('dt').value);
         let ip = parseFloat(document.getElementById('ip').value);
         let fp = parseFloat(document.getElementById('fp').value);
 
-        let fv = parseFloat(document.getElementById('fv').value);
+        // let fv = parseFloat(document.getElementById('fv').value);
         let iv = parseFloat(document.getElementById('iv').value);
-        let a = (fv-iv)/timeDiff;
+        let a = parseFloat(document.getElementById('ax').value);
 
         myBall.x = myAxis.ftp + myAxis.spacing * ip;
-        document.getElementById('answer').innerHTML = "a = (" + fv + " - " + iv + ")/" + timeDiff + " = " + a;
+        // document.getElementById('answer').innerHTML = "a = (" + fv + " - " + iv + ")/" + timeDiff + " = " + a;
         myBall.vx = iv * myAxis.spacing;
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -113,7 +118,7 @@
       let start = null;
 
       function animateBall(ts) {
-        console.log("animating")
+        //console.log("animating")
         if (!prev) {
           prev = ts;
         }
@@ -121,29 +126,30 @@
           start = ts;
         }
         let dt = (ts - prev)/1000;
-        let timeDiff = parseFloat(document.getElementById('dt').value);
+        // let timeDiff = parseFloat(document.getElementById('dt').value);
         let end = myAxis.ftp + myAxis.spacing * parseInt(document.getElementById('fp').value);
         let begin = myAxis.ftp + myAxis.spacing * parseInt(document.getElementById('ip').value);
-        let fv = parseFloat(document.getElementById('fv').value);
         let iv = parseFloat(document.getElementById('iv').value);
-        let a = (fv-iv)/timeDiff;
-        console.log("iv = " + iv)
-        console.log("dt = "+dt)
+        let a = parseFloat(document.getElementById('ax').value);
+        //console.log("iv = " + iv)
+        // console.log("dt = "+dt)
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        console.log(myBall.vx)
-        myBall.accelerate(a, 0 , dt);
+        // console.log(myBall.vx)
+
+        myBall.accelerate(a*myAxis.spacing, 0 , dt);
         myBall.move(dt);
         myAxis.draw(ctx);
         myBall.draw(ctx);
-
+        prev = ts;
+        document.getElementById("time").innerHTML = ((ts-start)/1000).toFixed(3)
+        document.getElementById("inst_v").innerHTML = (parseFloat(myBall.vx)/parseFloat(myAxis.spacing)).toFixed(3)
         let af = requestAnimationFrame(animateBall);
-        document.getElementById("time").innerHTML = Math.floor((ts-start)/1000)
 
         if ((myBall.x > end) || (myBall.x < begin) ) {
           cancelAnimationFrame(af);
-          document.getElementById('dt').disabled = false;
+          // document.getElementById('dt').disabled = false;
           document.getElementById('iv').disabled = false;
-          document.getElementById('fv').disabled = false;
+          document.getElementById('ax').disabled = false;
           document.getElementById('runButton').disabled = false;
           start = null;
           prev = null;
