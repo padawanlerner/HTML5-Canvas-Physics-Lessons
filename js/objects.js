@@ -34,7 +34,23 @@ const draw = (state) => ({
 
         break;
       case 2: //axis
+
         if (state.isVertical) {
+          context.beginPath()
+          context.moveTo(state.pos, state.min);
+          context.lineTo(state.pos, state.max);
+          context.stroke()
+
+          for (let i = state.minVal; i < state.numTicks+state.minVal; i++) {
+            context.moveTo(state.pos-15, state.ftp+state.spacing*(i));
+            context.lineTo(state.pos+15, state.ftp+state.spacing*(i));
+            context.stroke()
+
+
+            context.font="20px Georgia";
+            context.fillText(state.maxVal -i*state.interval, state.pos-25, state.ftp+state.spacing*(i)+25)
+
+          }
 
         } else {
           context.beginPath()

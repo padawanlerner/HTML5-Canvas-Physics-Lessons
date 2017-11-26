@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Vectors</title>
+  <style media="screen">
+    body {
+      background-color: rgb(116, 158, 223);
+      text-align: center;
+
+    }
+
+    canvas {
+      background-color: rgb(88, 133, 236);
+      border: 1px solid black;
+    }
+
+    div {
+      display: flex;
+      justify-content: center;
+    }
+
+    .child {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h1>Kinematics in one dimension</h1>
+  <h2>Vectors</h2>
+  <canvas id="vectors" width="800" height="400">
+
+  </canvas>
+  <h2>Vectors</h2>
+
+
+  <div style="display: flex;">
+    <div style="display: block; margin-right: 15px;">
+      <label for="x_comp">X component</label><input type="number" max = "11" min = "0" name="x_comp" id = "x_comp" value="">
+      <br>
+      <label for="y_comp">Y component</label><input type="number" max = "5" min = "0" name="y_comp" id = "y_comp" value="">
+    </div>
+    <div style="display: block; margin-right: 15px;">
+    </div>
+
+  </div>
+
+  <!-- <p id="answer">A = ?</p> -->
+
+  <p><a href="index.html">Go home</a></p>
+  <script src="js/objects.js" charset="utf-8"></script>
+
+  <script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function(){
+
+    const canvas = document.getElementById("vectors");
+    const AXIS_Y_POS = canvas.height-50;
+    // const AXIS_X_POS = 100;
+
+    let ctx = canvas.getContext("2d");
+
+    ctx.clearRect(0,0, canvas.width, canvas.height)
+
+    let myXAxis = axis(0, canvas.width, 70, 0, AXIS_Y_POS, 70, 11, 0, 1);
+    let myYAxis = axis(0, canvas.height, 70, 1, 70, 0, 5, 0, 1);
+    // (min, max, spaceBet, isVertical, pos, firstTickPos, numTicks, firstTickVal, tickInterval)
+
+    myXAxis.draw(ctx);
+    myYAxis.draw(ctx);
+
+
+
+    document.getElementById('x_comp').addEventListener("change", function(){
+      let x = parseFloat(document.getElementById("x_comp").value);
+      let y = parseFloat(document.getElementById("y_comp").value);
+
+      ctx.clearRect(0,0, canvas.width, canvas.height);
+      myXAxis.draw(ctx);
+      myYAxis.draw(ctx);
+
+      ctx.beginPath();
+      ctx.moveTo(70, AXIS_Y_POS);
+      ctx.lineTo(70+x*myXAxis.spacing, AXIS_Y_POS-y*myYAxis.spacing);
+      ctx.stroke()
+    })
+    document.getElementById('y_comp').addEventListener("change", function(){
+      let x = parseFloat(document.getElementById("x_comp").value);
+      let y = parseFloat(document.getElementById("y_comp").value);
+
+      ctx.clearRect(0,0, canvas.width, canvas.height);
+      myXAxis.draw(ctx);
+      myYAxis.draw(ctx);
+      
+      ctx.beginPath();
+      ctx.moveTo(70, AXIS_Y_POS);
+      ctx.lineTo(70+x*myXAxis.spacing, AXIS_Y_POS-y*myYAxis.spacing);
+      ctx.stroke()
+      // console.log("nyiay")
+    })
+
+
+
+  })
+
+
+  </script>
+
+</body>
+</html>
