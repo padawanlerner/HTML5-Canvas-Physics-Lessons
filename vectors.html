@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,20 +28,23 @@
     }
   </style>
 </head>
+
 <body>
-  <h1>Kinematics in one dimension</h1>
-  <h2>Vectors</h2>
+  <h1>Vectors</h1>
   <canvas id="vectors" width="800" height="400">
 
   </canvas>
   <h2>Vectors</h2>
-
+  <p>Vectors represent positions in more than one dimension.</p>
+  <p>X and Y are commonly used to represent 2 dimensional vectors</p>
+  <p>In this example, X refers to the horizontal component, Y refers to the vertical component</p>
+  <p>Each component of a vector can have a displacement, velocity, and position</p>
 
   <div style="display: flex;">
     <div style="display: block; margin-right: 15px;">
-      <label for="x_comp">X component</label><input type="number" max = "11" min = "0" name="x_comp" id = "x_comp" value="">
+      <label for="x_comp">X component</label><input type="number" max="11" min="0" name="x_comp" id="x_comp" value="">
       <br>
-      <label for="y_comp">Y component</label><input type="number" max = "5" min = "0" name="y_comp" id = "y_comp" value="">
+      <label for="y_comp">Y component</label><input type="number" max="5" min="0" name="y_comp" id="y_comp" value="">
     </div>
     <div style="display: block; margin-right: 15px;">
     </div>
@@ -53,59 +57,53 @@
   <script src="js/objects.js" charset="utf-8"></script>
 
   <script type="text/javascript">
-  document.addEventListener("DOMContentLoaded", function(){
+    document.addEventListener("DOMContentLoaded", function() {
 
-    const canvas = document.getElementById("vectors");
-    const AXIS_Y_POS = canvas.height-50;
-    // const AXIS_X_POS = 100;
+      const canvas = document.getElementById("vectors");
+      const AXIS_Y_POS = canvas.height - 50;
+      // const AXIS_X_POS = 100;
 
-    let ctx = canvas.getContext("2d");
+      let ctx = canvas.getContext("2d");
 
-    ctx.clearRect(0,0, canvas.width, canvas.height)
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-    let myXAxis = axis(0, canvas.width, 70, 0, AXIS_Y_POS, 70, 11, 0, 1);
-    let myYAxis = axis(0, canvas.height, 70, 1, 70, 0, 5, 0, 1);
-    // (min, max, spaceBet, isVertical, pos, firstTickPos, numTicks, firstTickVal, tickInterval)
+      let myXAxis = axis(0, canvas.width, 70, 0, AXIS_Y_POS, 70, 11, 0, 1);
+      let myYAxis = axis(0, canvas.height, 70, 1, 70, 0, 5, 0, 1);
+      // (min, max, spaceBet, isVertical, pos, firstTickPos, numTicks, firstTickVal, tickInterval)
 
-    myXAxis.draw(ctx);
-    myYAxis.draw(ctx);
-
-
-
-    document.getElementById('x_comp').addEventListener("change", function(){
-      let x = parseFloat(document.getElementById("x_comp").value);
-      let y = parseFloat(document.getElementById("y_comp").value);
-
-      ctx.clearRect(0,0, canvas.width, canvas.height);
       myXAxis.draw(ctx);
       myYAxis.draw(ctx);
 
-      ctx.beginPath();
-      ctx.moveTo(70, AXIS_Y_POS);
-      ctx.lineTo(70+x*myXAxis.spacing, AXIS_Y_POS-y*myYAxis.spacing);
-      ctx.stroke()
+      let inpts = document.getElementsByTagName("input");
+      // console.log(inpts);
+
+      // console.log(typeof(inpts));
+
+      for (element of inpts) {
+        element.addEventListener("change", function(e){
+          let X = parseFloat(document.getElementById("x_comp").value);
+          let Y = parseFloat(document.getElementById("y_comp").value);
+          ctx.clearRect(0, 0, canvas.width, canvas.height)
+          myXAxis.draw(ctx);
+          myYAxis.draw(ctx);
+
+          let computedX = 70+X*myXAxis.spacing;
+          let computedY = AXIS_Y_POS-Y*myYAxis.spacing;
+          console.log(computedX);
+          console.log(computedY);
+
+          ctx.moveTo(70,AXIS_Y_POS);
+          ctx.lineTo(computedX,computedY);
+          ctx.stroke();
+
+        })
+      }
+
+
+
     })
-    document.getElementById('y_comp').addEventListener("change", function(){
-      let x = parseFloat(document.getElementById("x_comp").value);
-      let y = parseFloat(document.getElementById("y_comp").value);
-
-      ctx.clearRect(0,0, canvas.width, canvas.height);
-      myXAxis.draw(ctx);
-      myYAxis.draw(ctx);
-      
-      ctx.beginPath();
-      ctx.moveTo(70, AXIS_Y_POS);
-      ctx.lineTo(70+x*myXAxis.spacing, AXIS_Y_POS-y*myYAxis.spacing);
-      ctx.stroke()
-      // console.log("nyiay")
-    })
-
-
-
-  })
-
-
   </script>
 
 </body>
+
 </html>

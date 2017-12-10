@@ -28,9 +28,9 @@
   </style>
 </head>
 <body>
-  <h1>Kinematics in one dimension</h1>
+  <h1>Kinematics in two dimensions</h1>
   <h2>Displacement 2D</h2>
-  <canvas id="Disp2D" width="800" height="300">
+  <canvas id="Disp2D" width="800" height="400">
 
   </canvas>
   <h2>Displacement 2D</h2>
@@ -40,10 +40,35 @@
 
     <div style="display: flex;">
       <div style="display: block; margin-right: 15px;">
-        inputs
+        <p>x</p>
+        <label for="initial_x">Initial Position</label>
+        <input type="number" name="initial_x" max = "10" min = "0" id = "initial_x" value="0">
+        <br>
+        <label for="final_x">fInal Position</label>
+        <input type="number" name="final_x" max = "10" min = "0" id = "final_x" value="3">
+
       </div>
       <div style="display: block; margin-right: 15px;">
-        inputs
+        <p>y</p>
+        <label for="initial_y">Initial Position</label>
+        <input type="number" name="initial_y" max = "5" min="0" id = "initial_x" value="0">
+        <br>
+        <label for="final_y">fInal Position</label>
+        <input type="number" name="final_y" max = "5" min="0" id = "final_y" value="3">
+      </div>
+
+    </div>
+    <div style="display: flex;">
+      <div style="display: block; margin-right: 15px;">
+        <label for="together">Animate Together</label>
+        <input type="radio" name="together" id = "together" checked value="">
+
+      </div>
+      <div style="display: block; margin-right: 15px;">
+        <label for="separate">Animate components separately</label>
+        <input type="radio" name="separate" id = "separate" disabled value="">
+
+
       </div>
 
     </div>
@@ -54,9 +79,48 @@
   <!-- <p id="answer">A = ?</p> -->
 
   <p><a href="index.html">Go home</a></p>
+  <script src="js/objects.js" charset="utf-8"></script>
 
   <script type="text/javascript">
-    document.getElementById('run').addEventListener("submit", function(e){
+  document.addEventListener("DOMContentLoaded", function(){
+
+    const canvas = document.getElementById("Disp2D");
+    const AXIS_Y_POS = canvas.height-50;
+
+    const BALLRADIUS = 5;
+
+
+
+    let ctx = canvas.getContext("2d");
+
+    ctx.clearRect(0,0, canvas.width, canvas.height)
+
+    let myXAxis = axis(0, canvas.width, 70, 0, AXIS_Y_POS, 70, 11, 0, 1);
+    let myYAxis = axis(0, canvas.height, 70, 1, 70, 0, 5, 0, 1);
+    // (min, max, spaceBet, isVertical, pos, firstTickPos, numTicks, firstTickVal, tickInterval)
+
+    let myBall = ball(0.7, BALLRADIUS, 70, AXIS_Y_POS, 5/1000, 0, "rgb(24, 144, 107)")
+
+    myXAxis.draw(ctx);
+    myYAxis.draw(ctx);
+    myBall.draw(ctx);
+    console.log(document.getElementById("runButton"))
+
+    document.getElementById("runButton").addEventListener("submit", function(e) {
       e.preventDefault();
+      ctx.clearRect(0,0, canvas.width, canvas.height);
+
+      let ix = parseFloat(document.getElementById("initial_x").value);
+      let iy = parseFloat(document.getElementById("initial_y").value);
+      let fx = parseFloat(document.getElementById("final_x").value);
+      let fy = parseFloat(document.getElementById("final_x").value);
+      console.log(fx);
+
     })
+
+
+
+  })
+
+
   </script>
