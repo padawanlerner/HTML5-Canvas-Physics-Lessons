@@ -44,16 +44,18 @@
         <label for="initial_x">Initial Position</label>
         <input type="number" name="initial_x" max = "10" min = "0" id = "initial_x" value="0">
         <br>
-        <label for="final_x">fInal Position</label>
+        <br>
+        <label for="final_x">Final Position</label>
         <input type="number" name="final_x" max = "10" min = "0" id = "final_x" value="3">
 
       </div>
       <div style="display: block; margin-right: 15px;">
         <p>y</p>
         <label for="initial_y">Initial Position</label>
-        <input type="number" name="initial_y" max = "5" min="0" id = "initial_x" value="0">
+        <input type="number" name="initial_y" max = "5" min="0" id = "initial_y" value="0">
         <br>
-        <label for="final_y">fInal Position</label>
+        <br>
+        <label for="final_y">Final Position</label>
         <input type="number" name="final_y" max = "5" min="0" id = "final_y" value="3">
       </div>
 
@@ -106,17 +108,102 @@
     myBall.draw(ctx);
     console.log(document.getElementById("runButton"))
 
-    document.getElementById("runButton").addEventListener("submit", function(e) {
+    document.getElementById("run").addEventListener("submit", function(e) {
       e.preventDefault();
       ctx.clearRect(0,0, canvas.width, canvas.height);
 
       let ix = parseFloat(document.getElementById("initial_x").value);
       let iy = parseFloat(document.getElementById("initial_y").value);
       let fx = parseFloat(document.getElementById("final_x").value);
-      let fy = parseFloat(document.getElementById("final_x").value);
-      console.log(fx);
+      let fy = parseFloat(document.getElementById("final_y").value);
+
+      document.getElementById("initial_x").disabled = true;
+      document.getElementById("initial_y").disabled = true;
+      document.getElementById("final_x").disabled = true;
+      document.getElementById("final_y").disabled = true;
+      document.getElementById("runButton").disabled = true;
+
+
+      myBall.x = myXAxis.ftp + myXAxis.spacing*ix
+      myBall.y = myYAxis.ftp + myYAxis.spacing*(5-iy)
+      console.log(iy);
+
+      myXAxis.draw(ctx);
+      myYAxis.draw(ctx);
+      myBall.draw(ctx);
+      let af = requestAnimationFrame(animateBall);
+
 
     })
+    let start = null;
+    function animateBall(timestamp){
+      start = !start ? timestamp: start;
+      ctx.clearRect(0,0, canvas.width, canvas.height);
+      let directionx = 0;
+      let directiony = 0;
+      let donex = 0;
+      let doney = 0;
+
+      let ix = parseFloat(document.getElementById("initial_x").value);
+      let iy = parseFloat(document.getElementById("initial_y").value);
+      let fx = parseFloat(document.getElementById("final_x").value);
+      let fy = parseFloat(document.getElementById("final_y").value);
+
+      let endx = myXAxis.ftp + myXAxis.spacing*fx;
+      let endy = myYAxis.ftp + myYAxis.spacing*(5-fy);
+
+      if (fx>ix) {
+        directionx =1;
+        if (myBall.x < endx) {
+          myBall.x+=1;
+        }else {
+          donex = 1;
+        }
+      }else {
+        if (myBall.x > endx) {
+          myBall.x-=1;
+
+        }else {
+          donex = 1;
+        }
+      }
+
+      if (fy<iy) {
+        if (myBall.y < endy) {
+          myBall.y+=1;
+        }else {
+          doney = 1
+        }
+      }else {
+        if (myBall.y > endy) {
+          myBall.y-=1;
+        }else {
+          doney = 1
+        }
+      }
+      // console.log(endy)
+      // console.log(myBall.y)
+      // console.log(doney)
+
+      myXAxis.draw(ctx);
+      myYAxis.draw(ctx);
+      myBall.draw(ctx);
+
+      let af = requestAnimationFrame(animateBall);
+
+      if (doney && donex) {
+        cancelAnimationFrame(af);
+        // document.getElementById('submitButton').disabled = false;
+
+        document.getElementById("initial_x").disabled = false;
+        document.getElementById("initial_y").disabled = false;
+        document.getElementById("final_x").disabled = false;
+        document.getElementById("final_y").disabled = false;
+        document.getElementById("runButton").disabled = false;
+
+      }
+
+    }
 
 
 
