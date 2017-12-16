@@ -149,8 +149,14 @@
       let fx = parseFloat(document.getElementById("final_x").value);
       let fy = parseFloat(document.getElementById("final_y").value);
 
+      let stx = myXAxis.ftp + myXAxis.spacing*ix;
+      let sty = myYAxis.ftp + myYAxis.spacing*(5-iy);
+
+
       let endx = myXAxis.ftp + myXAxis.spacing*fx;
       let endy = myYAxis.ftp + myYAxis.spacing*(5-fy);
+
+      let m = (endy-sty)/(endx-stx)
 
       if (fx>ix) {
         directionx =1;
@@ -170,13 +176,13 @@
 
       if (fy<iy) {
         if (myBall.y < endy) {
-          myBall.y+=1;
+          myBall.y+=-m;
         }else {
           doney = 1
         }
       }else {
         if (myBall.y > endy) {
-          myBall.y-=1;
+          myBall.y-=-m;
         }else {
           doney = 1
         }
