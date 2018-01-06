@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Velocity 2D</title>
+  <style media="screen">
+    body {
+      background-color: rgb(116, 158, 223);
+      text-align: center;
+    }
+
+    canvas {
+      background-color: rgb(88, 133, 236);
+      border: 1px solid black;
+    }
+
+    div {
+      display: flex;
+      justify-content: center;
+    }
+
+    .child {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Kinematics in two dimensions</h1>
+  <h2>Velocity 2D</h2>
+  <canvas id="Vel2D" width="800" height="400">
+
+  </canvas>
+  <h2>Velocity 2D</h2>
+
+
+  <form id="run" action="index.html" method="post">
+
+    <div style="display: flex;">
+      <div style="display: block; margin-right: 15px;">
+        <p>x</p>
+        <label for="initial_x">Initial Position</label>
+        <input type="number" name="initial_x" max="10" min="0" id="initial_x" value="0">
+        <br>
+        <br>
+        <label for="final_x">Final Position</label>
+        <input type="number" name="final_x" max="10" min="0" id="final_x" value="3">
+
+      </div>
+      <div style="display: block; margin-right: 15px;">
+        <p>y</p>
+        <label for="initial_y">Initial Position</label>
+        <input type="number" name="initial_y" max="5" min="0" id="initial_y" value="0">
+        <br>
+        <br>
+        <label for="final_y">Final Position</label>
+        <input type="number" name="final_y" max="5" min="0" id="final_y" value="3">
+      </div>
+
+      <div style="display: block; margin-right: 15px;">
+        <p id = "time">-</p>
+        <label for="dt">&Delta;t</label>
+        <input type="number" name="dt" max="5" min="1" id="dt" value="0">
+
+      </div>
+    </div>
+    <div style="display: flex;">
+      <div style="display: block; margin-right: 15px;">
+        <label for="together">Animate Together</label>
+        <input type="radio" name="together" id="together" checked value="">
+
+      </div>
+      <div style="display: block; margin-right: 15px;">
+        <label for="separate">Animate components separately</label>
+        <input type="radio" name="separate" id="separate" disabled value="">
+
+
+      </div>
+
+    </div>
+
+    <input id="runButton" type="submit" value="Run Animation">
+
+  </form>
+  <!-- <p id="answer">A = ?</p> -->
+
+  <p><a href="index.html">Go home</a></p>
+  <script src="js/objects.js" charset="utf-8"></script>
+
+  <script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+
+      const canvas = document.getElementById("Vel2D");
+      const AXIS_Y_POS = canvas.height - 50;
+
+      const BALLRADIUS = 5;
+
+      let ctx = canvas.getContext("2d");
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+      let myXAxis = axis(0, canvas.width, 70, 0, AXIS_Y_POS, 70, 11, 0, 1);
+      let myYAxis = axis(0, canvas.height, 70, 1, 70, 0, 5, 0, 1);
+      // (min, max, spaceBet, isVertical, pos, firstTickPos, numTicks, firstTickVal, tickInterval)
+
+      let myBall = ball(0.7, BALLRADIUS, 70, AXIS_Y_POS, 5 / 1000, 0, "rgb(24, 144, 107)")
+
+      myXAxis.draw(ctx);
+      myYAxis.draw(ctx);
+      myBall.draw(ctx);
+      console.log(document.getElementById("runButton"))
+
+      document.getElementById("run").addEventListener("submit", function(e) {
+        e.preventDefault();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        let ix = parseFloat(document.getElementById("initial_x").value);
+        let iy = parseFloat(document.getElementById("initial_y").value);
+        let fx = parseFloat(document.getElementById("final_x").value);
+        let fy = parseFloat(document.getElementById("final_y").value);
+
+        let dt = parseFloat(document.getElementById('dt').value);
+
+        document.getElementById("initial_x").disabled = true;
+        document.getElementById("initial_y").disabled = true;
+        document.getElementById("final_x").disabled = true;
+        document.getElementById("final_y").disabled = true;
+        document.getElementById("runButton").disabled = true;
+
+        prev = null;
+        start =null;
+        myBall.x = myXAxis.ftp + myXAxis.spacing * ix;
+        myBall.y = myYAxis.ftp + myYAxis.spacing * (5 - iy);
+
+        let vx = (fx-ix)/dt;
+        let vy = (fy-iy)/dt;
+
+        myBall.vx = vx * myXAxis.spacing;
+        console.log("vx: "+myBall.vx)
+        myBall.vy = -vy * myYAxis.spacing;
+        // console.log(iy);
+
+        myXAxis.draw(ctx);
+        myYAxis.draw(ctx);
+        myBall.draw(ctx);
+        let af = requestAnimationFrame(animateBall);
+
+
+      })
+      let prev = null;
+      let start = null;
+
+      function animateBall(timestamp) {
+        if (!prev) {
+          prev = timestamp;
+        }
+        if (!start){
+          start = timestamp;
+        }
+        // console.log("yn=")
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let directionx = 0;
+        let directiony = 0;
+        let donex = 0;
+        let doney = 0;
+
+        let ix = parseFloat(document.getElementById("initial_x").value);
+        let iy = parseFloat(document.getElementById("initial_y").value);
+        let fx = parseFloat(document.getElementById("final_x").value);
+        let fy = parseFloat(document.getElementById("final_y").value);
+
+        // let dt = parseFloat(document.getElementById('dt').value);
+        // let vx = (fx-ix)/dt;
+        // let vy = (fy-iy)/dt;
+
+        let stx = myXAxis.ftp + myXAxis.spacing * ix;
+        let sty = myYAxis.ftp + myYAxis.spacing * (5 - iy);
+
+        let endx = myXAxis.ftp + myXAxis.spacing * fx;
+        let endy = myYAxis.ftp + myYAxis.spacing * (5 - fy);
+
+        let m = (endy - sty) / (endx - stx);
+
+        let dt = (timestamp - prev)/1000;
+
+        document.getElementById("time").innerHTML = Math.floor((timestamp-start)/1000);
+
+        myBall.move(dt);
+        myXAxis.draw(ctx);
+        myYAxis.draw(ctx);
+        myBall.draw(ctx);
+        prev = timestamp;
+        let af = requestAnimationFrame(animateBall);
+
+        if (myBall.x >= endx) {
+          donex=1;
+        }
+        console.log(endy);
+        console.log(myBall.y);
+        console.log(myBall.y<endy)
+        if (myBall.y < endy) {
+          doney=1;
+        }
+
+        if (donex && doney) {
+          cancelAnimationFrame(af);
+          // document.getElementById('submitButton').disabled = false;
+
+          document.getElementById("initial_x").disabled = false;
+          document.getElementById("initial_y").disabled = false;
+          document.getElementById("final_x").disabled = false;
+          document.getElementById("final_y").disabled = false;
+          document.getElementById("runButton").disabled = false;
+
+        }
+
+      }
+
+
+
+    })
+  </script>
